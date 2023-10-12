@@ -23,12 +23,13 @@
 
         var audioConfig  = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
         recognizer = new SpeechSDK.TranslationRecognizer(speechConfig, audioConfig);
+        let translation;
 
         recognizer.recognizeOnceAsync(
           function (result) {
             startRecognizeOnceAsyncButton.disabled = false;
             if (result.reason === SpeechSDK.ResultReason.TranslatedSpeech) {
-              let translation = result.translations.get(language);
+              translation = result.translations.get(language);
               window.console.log(translation);
               phraseDiv.innerHTML += translation;
             }
@@ -37,10 +38,17 @@
             recognizer = undefined;
 
             toggleMic();
-            // TODO
-            // insert rest call here & return appropriate
-            // HTML instead of hard-coded /address
-            document.getElementById('app').src = "/address";
+
+            const url = "/?q=" + translation;
+            console.log("calling url", url);
+
+            $.get(url, function(data, status) {
+                console.log("translation", translation);
+                console.log("data", data);
+                if (data) {
+                    document.getElementById('app').src = data;
+                }
+            });
 
           },
           function (err) {

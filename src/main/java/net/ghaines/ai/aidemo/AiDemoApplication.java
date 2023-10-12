@@ -1,5 +1,7 @@
 package net.ghaines.ai.aidemo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.client.AiClient;
 import org.springframework.ai.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +34,7 @@ class AiController {
 
 	@GetMapping
 	ResponseEntity<String> performAI(@RequestParam(value = "q") String q,
-									 @RequestParam(value = "acct") String acct) {
+									 @RequestParam(value = "acct", required = false) String acct) {
 		return ResponseEntity.ok(aiService.performAI(q));
 	}
 
@@ -42,6 +44,8 @@ class AiController {
 class AiService {
 	private final AiClient aiClient;
 
+	private final static Logger LOGGER = LoggerFactory.getLogger(AiService.class);
+
 	public AiService(AiClient aiClient) {
 		this.aiClient = aiClient;
 	}
@@ -49,32 +53,28 @@ class AiService {
 	String performAI(String request) {
 
 		var promptQ = """
-				Given the following options, which option most closely matches the request? If none of the
+				Given the below, which most closely matches the request? If none of the
 				options are similar, respond "Sorry, I cannot help with that."
 								
-				1. Update an address
-				2. Update a phone number
-				3. Transfer client to EJC
-				4. Enter a branch note
+				Update an address
+				Update a phone number
+				Transfer client to EJC
+				Enter a note
 								
 				Request: {request}
 					""";
 		var pt = new PromptTemplate(promptQ);
-
-		/* Some sample questions that tested as expected:
-			I just moved and would like to update my account.
-			Move an account to EJC
-			Enter a note for John Smith
-			I switched to Verizon and got a new number
-			What is the weather today?
-		*/
 		var prompt = pt.create(Map.of("request", request));
 		var answer = aiClient.generate(prompt).getGeneration().getText();
+		LOGGER.info("answer is: {}", answer);
 
-		var page = switch(answer) {
-			case "Option 1. Update an address" -> "addressPage/?conId=1234";
-			default -> throw new IllegalStateException("Unexpected value: " + answer);
+		var page = switch(answer.replace(".", "")) {
+			case "Update an address", "Update a phone number" -> "/profile";
+			case "Transfer client to EJC" -> "/transfer";
+			case "Enter a note" -> "/note";
+			default -> "";
 		};
+		LOGGER.info("routing to page: {}", page);
 		return page;
 	}
 }
@@ -97,8 +97,16 @@ class AiWeb {
 		return "account";
 	}
 
-	@GetMapping("/address")
-	String getAddress() {
-		return "address";
+	@GetMapping("/profile")
+	String getProfile() {
+		return "profile";
+	}
+	@GetMapping("/transfer")
+	String getTransfer() {
+		return "transfer";
+	}
+	@GetMapping("/note")
+	String getNote() {
+		return "note";
 	}
 }
