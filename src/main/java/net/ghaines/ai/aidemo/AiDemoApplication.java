@@ -106,7 +106,8 @@ class AiWeb {
 		return "transfer";
 	}
 	@GetMapping("/note")
-	String getNote() {
+	String getNote(Model model) {
+		model.addAttribute("speechKey", speechKey);
 		return "note";
 	}
 }
