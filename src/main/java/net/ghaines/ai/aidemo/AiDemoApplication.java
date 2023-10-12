@@ -2,13 +2,14 @@ package net.ghaines.ai.aidemo;
 
 import org.springframework.ai.client.AiClient;
 import org.springframework.ai.prompt.PromptTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -30,7 +31,8 @@ class AiController {
 	}
 
 	@GetMapping
-	ResponseEntity<String> performAI(@RequestParam(value = "q") String q) {
+	ResponseEntity<String> performAI(@RequestParam(value = "q") String q,
+									 @RequestParam(value = "acct") String acct) {
 		return ResponseEntity.ok(aiService.performAI(q));
 	}
 
@@ -67,6 +69,32 @@ class AiService {
 			What is the weather today?
 		*/
 		var prompt = pt.create(Map.of("request", request));
-		return aiClient.generate(prompt).getGeneration().getText();
+		var answer = aiClient.generate(prompt).getGeneration().getText();
+
+		var page = switch(answer) {
+			case "Option 1. Update an address" -> "addressPage/?conId=1234";
+			default -> throw new IllegalStateException("Unexpected value: " + answer);
+		};
+		return page;
+	}
+}
+
+@Controller
+@RequestMapping
+class AiWeb {
+
+	@Value("${speechKey}")
+	private String speechKey;
+
+	@GetMapping("/sf")
+	String getDemo() {
+		return "sf";
+	}
+	@GetMapping("/acct/{acctId}")
+	String getAccount(@PathVariable("acctId") String acctId, Model model) {
+		System.out.println(speechKey);
+		model.addAttribute(acctId);
+		model.addAttribute("speechKey", speechKey);
+		return "account";
 	}
 }

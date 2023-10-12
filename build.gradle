@@ -9,7 +9,7 @@ group = 'net.ghaines.ai'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '21'
+	sourceCompatibility = '17'
 }
 
 repositories {
@@ -21,6 +21,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.experimental.ai:spring-ai-openai-spring-boot-starter:0.7.0-SNAPSHOT'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
