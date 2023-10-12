@@ -83,7 +83,7 @@ class AiService {
 @RequestMapping
 class AiWeb {
 
-	@Value("${speechKey}")
+	@Value("${speech.key}")
 	private String speechKey;
 
 	@GetMapping("/sf")
