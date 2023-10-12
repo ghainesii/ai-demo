@@ -37,6 +37,10 @@
             recognizer = undefined;
 
             toggleMic();
+            // TODO
+            // insert rest call here & return appropriate
+            // HTML instead of hard-coded /address
+            document.getElementById('app').src = "/address";
 
           },
           function (err) {

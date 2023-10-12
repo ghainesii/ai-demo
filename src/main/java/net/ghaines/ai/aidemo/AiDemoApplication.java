@@ -92,9 +92,13 @@ class AiWeb {
 	}
 	@GetMapping("/acct/{acctId}")
 	String getAccount(@PathVariable("acctId") String acctId, Model model) {
-		System.out.println(speechKey);
 		model.addAttribute(acctId);
 		model.addAttribute("speechKey", speechKey);
 		return "account";
+	}
+
+	@GetMapping("/address")
+	String getAddress() {
+		return "address";
 	}
 }
