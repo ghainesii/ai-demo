@@ -46,7 +46,7 @@
                 console.log("translation", translation);
                 console.log("data", data);
                 if (data) {
-                    document.getElementById('app').src = data;
+                    document.location.href= data;
                 }
             });
 

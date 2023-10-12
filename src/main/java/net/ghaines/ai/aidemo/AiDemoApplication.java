@@ -97,10 +97,26 @@ class AiWeb {
 		return "account";
 	}
 
-	@GetMapping("/profile")
-	String getProfile() {
-		return "profile";
+	@GetMapping("/contacts")
+	String getContacts(Model model) {
+		//model.addAttribute(acctId);
+		model.addAttribute("speechKey", speechKey);
+		return "contacts";
 	}
+
+	@GetMapping("/home")
+	String getHome(Model model) {
+		//model.addAttribute(acctId);
+		model.addAttribute("speechKey", speechKey);
+		return "home";
+	}
+
+	@GetMapping("/profile")
+	String getProfile(Model model) {
+		model.addAttribute("speechKey", speechKey);
+		return "contacts";
+	}
+
 	@GetMapping("/transfer")
 	String getTransfer() {
 		return "transfer";
@@ -109,5 +125,17 @@ class AiWeb {
 	String getNote(Model model) {
 		model.addAttribute("speechKey", speechKey);
 		return "note";
+	}
+
+	@GetMapping("/notes")
+	String s(Model model) {
+		model.addAttribute("speechKey", speechKey);
+		return "notes";
+	}
+
+	@GetMapping("/transfers")
+	String transfers(Model model) {
+		model.addAttribute("speechKey", speechKey);
+		return "transfers";
 	}
 }
