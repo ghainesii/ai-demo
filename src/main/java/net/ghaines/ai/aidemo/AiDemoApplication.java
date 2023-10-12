@@ -59,6 +59,7 @@ class AiService {
 				Update a phone number
 				Transfer client to EJC
 				Enter a note
+				Home page
 								
 				Request: {request}
 					""";
@@ -75,6 +76,7 @@ class AiService {
 						-> "/contacts";
 			case "Transfer client to EJC" -> "/transfers";
 			case "Enter a note" -> "/notes";
+			case "Home page" -> "/home";
 			default -> "";
 		};
 		LOGGER.info("routing to page: {}", page);
