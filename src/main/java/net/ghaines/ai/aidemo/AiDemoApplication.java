@@ -33,8 +33,7 @@ class AiController {
 	}
 
 	@GetMapping
-	ResponseEntity<String> performAI(@RequestParam(value = "q") String q,
-									 @RequestParam(value = "acct", required = false) String acct) {
+	ResponseEntity<String> performAI(@RequestParam(value = "q") String q) {
 		return ResponseEntity.ok(aiService.performAI(q));
 	}
 
@@ -68,10 +67,14 @@ class AiService {
 		var answer = aiClient.generate(prompt).getGeneration().getText();
 		LOGGER.info("answer is: {}", answer);
 
-		var page = switch(answer.replace(".", "")) {
-			case "Update an address", "Update a phone number" -> "/profile";
-			case "Transfer client to EJC" -> "/transfer";
-			case "Enter a note" -> "/note";
+		var page = switch (answer.replace(".", "")) {
+			case "Update an address",
+					"Update a phone number",
+					"Update contact",
+					"Update profile"
+						-> "/contacts";
+			case "Transfer client to EJC" -> "/transfers";
+			case "Enter a note" -> "/notes";
 			default -> "";
 		};
 		LOGGER.info("routing to page: {}", page);
@@ -86,10 +89,12 @@ class AiWeb {
 	@Value("${speech.key}")
 	private String speechKey;
 
-	@GetMapping("/sf")
-	String getDemo() {
-		return "sf";
+	@GetMapping("/home")
+	String getHome(Model model) {
+		model.addAttribute("speechKey", speechKey);
+		return "home";
 	}
+
 	@GetMapping("/acct/{acctId}")
 	String getAccount(@PathVariable("acctId") String acctId, Model model) {
 		model.addAttribute(acctId);
@@ -99,16 +104,8 @@ class AiWeb {
 
 	@GetMapping("/contacts")
 	String getContacts(Model model) {
-		//model.addAttribute(acctId);
 		model.addAttribute("speechKey", speechKey);
 		return "contacts";
-	}
-
-	@GetMapping("/home")
-	String getHome(Model model) {
-		//model.addAttribute(acctId);
-		model.addAttribute("speechKey", speechKey);
-		return "home";
 	}
 
 	@GetMapping("/profile")
@@ -121,6 +118,7 @@ class AiWeb {
 	String getTransfer() {
 		return "transfer";
 	}
+
 	@GetMapping("/note")
 	String getNote(Model model) {
 		model.addAttribute("speechKey", speechKey);
