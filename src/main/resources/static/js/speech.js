@@ -11,6 +11,7 @@
       phraseDiv = document.getElementById("phraseDiv");
 
       startRecognizeOnceAsyncButton.addEventListener("click", function () {
+
         startRecognizeOnceAsyncButton.disabled = true;
         phraseDiv.innerHTML = "";
 
@@ -39,6 +40,9 @@
 
             toggleMic();
 
+            $("#sorry-message").hide();
+            $("#spinner").show();
+
             const url = "/?q=" + translation;
             console.log("calling url", url);
 
@@ -47,6 +51,9 @@
                 console.log("data", data);
                 if (data) {
                     document.location.href= data;
+                } else {
+                    $("#spinner").hide();
+                    $("#sorry-message").show();
                 }
             });
 
