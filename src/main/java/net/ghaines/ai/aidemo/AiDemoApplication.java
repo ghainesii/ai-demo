@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -39,8 +38,8 @@ class AiController {
 	}
 
 	@GetMapping
-	ResponseEntity<String> performAI(@RequestParam(value = "q") String q) {
-		return ResponseEntity.ok(aiService.performAI(q));
+	String performAI(@RequestParam(value = "q") String q) {
+		return aiService.performAI(q);
 	}
 
 }
